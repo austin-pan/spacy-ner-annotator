@@ -240,7 +240,7 @@ $("#skip").click(function(){
 });
 
 $("#next").click(function(){
-	if(entities.length == 0){
+	if(entities.length == 0 & page_num < text_file_all_text.length - 1){
 		// skip
 		// alert("Please select atleast one entity");
 		page_num++;
@@ -249,6 +249,7 @@ $("#next").click(function(){
 		$(".gsc-search-button").click();
 		return;
 	}
+
 	training_data = {};
 	training_data['content'] = full_text;
 	training_data['entities'] = entities;
@@ -261,7 +262,7 @@ $("#next").click(function(){
 	// $("#save").show();
 	// $("#edit").hide();
 	$("#entity").empty();
-	if(page_num < text_file_all_text.length){
+	if(page_num < text_file_all_text.length - 1){
 		$('#editor').text(text_file_all_text[page_num]);
 		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 		$(".gsc-search-button").click();
