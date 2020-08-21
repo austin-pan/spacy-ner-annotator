@@ -68,11 +68,22 @@ function clearSelection()
  if (window.getSelection) {window.getSelection().removeAllRanges();}
  else if (document.selection) {document.selection.empty();}
 }
+function commit() {
+	full_text = $("#editor").text();
+	if(full_text != $("#gsc-i-id1").val()){
+		$("#gsc-i-id1.gsc-input").val(full_text);
+	    $(".gsc-search-button").click();
+	}
+	$("#editor").attr('contenteditable',false);
+}
+
 $(document).ready(function(){
 	l('ok');
 	$("#edit").hide();
 	$('textarea').attr('readonly',false);
 	$("#fileUpload").click()
+
+	$("#editor").attr('contenteditable',false);
 
 	// var cx = '011558942542564350974:nldba-ydc7g'; // Insert your own Custom Search engine ID here
 	// var gcse = document.createElement('script');
@@ -114,12 +125,7 @@ $(document).ready(function(){
 	// }
 });
 $("#save").click(function(){
-	full_text = $("#editor").text();
-	if(full_text != $("#gsc-i-id1").val()){
-		$("#gsc-i-id1.gsc-input").val(full_text);
-	    $(".gsc-search-button").click();
-	}
-	$("#editor").attr('contenteditable',false);
+	commit();
 	$("#save").hide();
 	$("#edit").show();
 });
@@ -147,6 +153,8 @@ $("input").keypress(function(e){
 	}
 });
 $( ".classes" ).on("click",".class",function(){
+	commit();
+
 	entity = [];
 	if($("#editor").attr('contenteditable') == 'true'){
 		alert("Please save the content");
@@ -218,11 +226,19 @@ $("#skip").click(function(){
 	$('#editor').text(text_file_all_text[page_num]);
 	$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 	$(".gsc-search-button").click();
+	$("#save").show();
+	$("#edit").hide();
+	$("#entity").empty();
 });
 
 $("#next").click(function(){
 	if(entities.length == 0){
-		alert("Please select atleast one entity");
+		// skip
+		// alert("Please select atleast one entity");
+		page_num++;
+		$('#editor').text(text_file_all_text[page_num]);
+		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
+		$(".gsc-search-button").click();
 		return;
 	}
 	training_data = {};
@@ -232,15 +248,17 @@ $("#next").click(function(){
 	page_num++;
 	entities = [];
 	full_text = "";
-	$("#editor").text("");
-	$("#editor").attr('contenteditable',true);
-	$("#save").show();
-	$("#edit").hide();
+	// $("#editor").text("");
+	// $("#editor").attr('contenteditable',true);
+	// $("#save").show();
+	// $("#edit").hide();
 	$("#entity").empty();
 	if(page_num < text_file_all_text.length){
 		$('#editor').text(text_file_all_text[page_num]);
 		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 		$(".gsc-search-button").click();
+	} else {
+		alert("Reached End of File");
 	}
 });
 $("#complete").click(function(){
@@ -261,10 +279,10 @@ $("#complete").click(function(){
 			page_num = 0;
 			entities = [];
 			full_text = "";
-			$("#editor").text("");
-			$("#editor").attr('contenteditable',true);
-			$("#save").show();
-			$("#edit").hide();
+			// $("#editor").text("");
+			// $("#editor").attr('contenteditable',true);
+			// $("#save").show();
+			// $("#edit").hide();
 			$("#entity").empty();
 		}
 	}
