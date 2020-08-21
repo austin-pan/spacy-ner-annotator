@@ -76,6 +76,10 @@ function commit() {
 	}
 	$("#editor").attr('contenteditable',false);
 }
+function addClass(classname) {
+	class_names.push(classname);
+	$(".classes").append('<div class="row pdn"><div class="col-9"><button class="class" style="background-color:'+getRandomColor()+'"><span>'+classname+'</span></button></div><div class="col-3"><button class="btn pull-right delete_btn"><i class="fa fa-trash"></i></button></div></div>');
+}
 
 $(document).ready(function(){
 	l('ok');
@@ -84,6 +88,9 @@ $(document).ready(function(){
 	$("#fileUpload").click()
 
 	$("#editor").attr('contenteditable',false);
+
+	addClass("PERSON");
+	addClass("ORGANIZATION");
 
 	// var cx = '011558942542564350974:nldba-ydc7g'; // Insert your own Custom Search engine ID here
 	// var gcse = document.createElement('script');
@@ -141,8 +148,9 @@ $("#addclass").click(function(){
 		$('input').val("");
 		return;
 	}
-	class_names.push(classname);
-	$(".classes").append('<div class="row pdn"><div class="col-9"><button class="class" style="background-color:'+getRandomColor()+'"><span>'+classname+'</span></button></div><div class="col-3"><button class="btn pull-right delete_btn"><i class="fa fa-trash"></i></button></div></div>')
+
+	addClass(classname);
+
 	$('input').val("");
 });
 $("input").keypress(function(e){
@@ -265,7 +273,9 @@ $("#complete").click(function(){
 	training_data = {};
 	training_data['content'] = full_text;
 	training_data['entities'] = entities;
-	training_datas.push(training_data);
+	if (full_text != "") {
+		training_datas.push(training_data);
+	}
 	if ('Blob' in window) {
 		var fileName = prompt('Please enter file name to save with(.json)', 'Untitled.json');
 		if(fileName != null){
