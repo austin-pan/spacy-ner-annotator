@@ -240,10 +240,13 @@ $("#skip").click(function(){
 });
 
 $("#next").click(function(){
-	if(entities.length == 0 & page_num < text_file_all_text.length - 1){
+	page_num++;
+	$("#doctext").text(text_file_all_text.slice(page_num, text_file_all_text.length).join("\n"));
+
+	if(entities.length == 0 & page_num < text_file_all_text.length){
 		// skip
 		// alert("Please select atleast one entity");
-		page_num++;
+		
 		$('#editor').text(text_file_all_text[page_num]);
 		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 		$(".gsc-search-button").click();
@@ -254,7 +257,7 @@ $("#next").click(function(){
 	training_data['content'] = full_text;
 	training_data['entities'] = entities;
 	training_datas.push(training_data);
-	page_num++;
+
 	entities = [];
 	full_text = "";
 	// $("#editor").text("");
@@ -262,7 +265,7 @@ $("#next").click(function(){
 	// $("#save").show();
 	// $("#edit").hide();
 	$("#entity").empty();
-	if(page_num < text_file_all_text.length - 1){
+	if(page_num < text_file_all_text.length){
 		$('#editor').text(text_file_all_text[page_num]);
 		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 		$(".gsc-search-button").click();
@@ -323,6 +326,7 @@ $("#upload").click(function(){
 		    $('#editor').text(text_file_all_text[page_num]);
 	    	$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 	    	$(".gsc-search-button").click();
+	    	$("#doctext").text(text_file_all_text.join("\r\n"));
 		};
 		reader.readAsText(textFile);
 	}

@@ -90,6 +90,17 @@
 			padding-top: 12px;
 			-webkit-animation:colorchange 20s infinite alternate;
 		}
+		#doctext{
+			white-space: pre;
+			width: 100%;
+		    padding: 10px;
+		    background-color: #444;
+		    color: white;
+		    font-size: 14px;
+		    font-family: monospace;
+		    overflow-x: auto;
+		    min-height: 200px;
+		}
 
 	    @-webkit-keyframes colorchange {
 	      0% {
@@ -188,6 +199,10 @@
 							</div>
 						</div>
 					</div>
+				</div>
+				<div class="row content">
+					<h4>Document Text Remaining</h4>
+					<div id="doctext"></div>
 				</div>
 			</div>
 			<div class="col-4">
