@@ -241,7 +241,7 @@ $("#skip").click(function(){
 
 $("#next").click(function(){
 	page_num++;
-	$("#doctext").text(text_file_all_text.slice(page_num, text_file_all_text.length).join("\n\n"));
+	$("#doctext").text(">>> " + text_file_all_text.slice(page_num, text_file_all_text.length).join("\n\n"));
 	$("#doccount").text(text_file_all_text.length - page_num)
 
 	if(entities.length == 0 & page_num < text_file_all_text.length){
@@ -254,19 +254,20 @@ $("#next").click(function(){
 		return;
 	}
 
-	training_data = {};
-	training_data['content'] = full_text;
-	training_data['entities'] = entities;
-	training_datas.push(training_data);
-
-	entities = [];
-	full_text = "";
 	// $("#editor").text("");
 	// $("#editor").attr('contenteditable',true);
 	// $("#save").show();
 	// $("#edit").hide();
 	$("#entity").empty();
 	if(page_num < text_file_all_text.length){
+		training_data = {};
+		training_data['content'] = full_text;
+		training_data['entities'] = entities;
+		training_datas.push(training_data);
+
+		entities = [];
+		full_text = "";
+		
 		$('#editor').text(text_file_all_text[page_num]);
 		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 		$(".gsc-search-button").click();
@@ -328,7 +329,7 @@ $("#upload").click(function(){
 		    $('#editor').text(text_file_all_text[page_num]);
 	    	$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 	    	$(".gsc-search-button").click();
-	    	$("#doctext").text(text_file_all_text.join("\n\n"));
+	    	$("#doctext").text(">>> " + text_file_all_text.join("\n\n"));
 	    	$("#doccount").text(text_file_all_text.length);
 		};
 		reader.readAsText(textFile);
