@@ -241,7 +241,7 @@ $("#skip").click(function(){
 
 $("#next").click(function(){
 	page_num++;
-	$("#doctext").text(text_file_all_text.slice(page_num, text_file_all_text.length).join("\n"));
+	$("#doctext").text(text_file_all_text.slice(page_num, text_file_all_text.length).join("\n\n"));
 
 	if(entities.length == 0 & page_num < text_file_all_text.length){
 		// skip
@@ -326,7 +326,7 @@ $("#upload").click(function(){
 		    $('#editor').text(text_file_all_text[page_num]);
 	    	$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 	    	$(".gsc-search-button").click();
-	    	$("#doctext").text(text_file_all_text.join("\r\n"));
+	    	$("#doctext").text(text_file_all_text.join("\n\n"));
 		};
 		reader.readAsText(textFile);
 	}
