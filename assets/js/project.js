@@ -229,14 +229,22 @@ $( "#entity" ).on("dblclick",".entityval",function(){
 	$(this).remove();
 });
 
-$("#skip").click(function(){
-	page_num++;
-	$('#editor').text(text_file_all_text[page_num]);
-	$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
-	$(".gsc-search-button").click();
-	$("#save").show();
-	$("#edit").hide();
-	$("#entity").empty();
+$("#prev").click(function(){
+	if (page_num > 0) {
+		page_num--;
+		$('#editor').text(text_file_all_text[page_num]);
+		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
+		$(".gsc-search-button").click();
+		// $("#save").show();
+		// $("#edit").hide();
+		$("#entity").empty();
+		entities = [];
+		full_text = "";
+
+		console.log(training_datas.pop());
+	} else {
+		alert("Already at Beginning");
+	}
 });
 
 $("#next").click(function(){
