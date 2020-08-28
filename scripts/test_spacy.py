@@ -12,7 +12,7 @@ def test_spacy(text):
 	for ent in doc.ents:
 		print(ent.text, ent.start_char, ent.end_char, ent.label_)
 
-model_path = "sfc_test"
+model_path = "spacy_model"
 custom_nlp = spacy.load(model_path)
 
 blank_nlp = spacy.load("en_core_web_sm")
