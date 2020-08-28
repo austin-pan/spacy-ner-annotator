@@ -80,6 +80,9 @@
 		.entityval div{
 			cursor: pointer;
 		}
+		.annotation {
+			cursor: pointer;
+		}
 		.delete_btn{
 			width: 50px;
 			height: 50px;
@@ -188,30 +191,7 @@
 			<div class="col-8">
 				<div class="row content">
 					<div class="col-3" style="padding: 0px;"><h4>Content</h4></div>
-					<!-- <div class="col-6 note"> <span>Please save it, Once pasted or typed</span> </div> -->
-					<div class="col-3">
-						<!-- <button type="button" class="btn btn-primary btn-sm pull-right" id="save">Save</button>
-						<button type="button" class="btn btn-primary btn-sm pull-right" id="edit">Edit</button> -->
-					</div>
-					
-					
 					<div id="editor" contenteditable="true" onpaste="myFunction()"></div>
-				</div>
-				<div class="row entity">
-					<div class="col-12">
-						<div class="row">
-							<div class="col-6"><h4>Output</h4></div>
-							<div class="col-6">
-								<div class="pull-right note"><span>Double click on text to delete</span></div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="entot" id="entity">
-								<!-- <div class="entityval"><div>March 8, 1992</div></div>
-								<div class="entityval"><div>Manivanann</div></div> -->
-							</div>
-						</div>
-					</div>
 				</div>
 				<div class="row content">
 					<h4>Remaining Document Text: <span id="doccount">0</span> Paragraph(s) Remaining</h4>
@@ -232,9 +212,6 @@
 								<button type="button" class="btn btn-primary btn-sm" id="addclass">Add</button>
 							</div>
 						</div>
-						<!-- <div class="pdn"><button class="class"><span>DOB</span></button></div>
-						<div class="pdn"><button class="class"><span>Name</span></button></div>
-						<div class="pdn"><button class="class"><span>Experience</span></button></div> -->
 					</div>
 					<div class="next-content">
 						<button type="button" id="prev" class="btn btn-secondary">Prev/Drop</button>

@@ -8,9 +8,7 @@ var training_data = {};
 var entities = [];
 var entities_values = [];
 var class_names = []
-function l(message){
-	console.log(message);
-}
+
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
   var color = '#';
@@ -19,71 +17,115 @@ function getRandomColor() {
   }
   return color;
 }
-function myFunction(){
+
+function myFunction() {
 	setTimeout(function() {
 		$("#editor").html($("#editor").text());
 	}, 0);
 	// alert();
 }
-function getCorrectedText(){
-	if($(".gsc-results.gsc-webResult").children().length > 3){
+
+function getCorrectedText() {
+	/*if ($(".gsc-results.gsc-webResult").children().length > 3) {
 		corrected_text = $(".gs-spelling a").first().text();
-		l(corrected_text)
-	}
+		console.log(corrected_text)
+	}*/
 }
-function getFilename(myFile){
+
+function getFilename(myFile) {
 	if(myFile.files.length > 0){
 		var file = myFile.files[0];  
 	   	var filename = file.name;
 	   	$(".custom-file-label").text(filename);
-	   	l(filename);
+	   	console.log(filename);
    }
    else{
    		$(".custom-file-label").text('Choose file...');
    }
 }
-function onPaste(e){
+
+function onPaste(e) {
   e.preventDefault();
 
-  if( e.clipboardData ){
+  if (e.clipboardData) {
     full_text = e.clipboardData.getData('text/plain');
     document.execCommand('insertText', false, full_text);
-    l(full_text);
+    console.log(full_text);
     return false;
-  }
-  else if( window.clipboardData ){
+  } else if (window.clipboardData) {
     full_text = window.clipboardData.getData('Text');
-    l(full_text);
+    console.log(full_text);
     if (window.getSelection)
-      window.getSelection().getRangeAt(0).insertNode( document.createTextNode(full_text) );
+      window.getSelection().getRangeAt(0).insertNode(document.createTextNode(full_text));
   }
 }
+
 // document.querySelector('[contenteditable]').addEventListener('paste', onPaste);
-function setEntityOutput(value,color){
-	l(value,color);
+function setEntityOutput(value, color){
+	console.log(value, color);
 	$("#entity").append('<div class="entityval"><div style="background-color:'+color+'">'+value+'</div></div>');
 }
-function clearSelection()
-{
- if (window.getSelection) {window.getSelection().removeAllRanges();}
- else if (document.selection) {document.selection.empty();}
+
+function clearSelection() {
+ if (window.getSelection) {
+ 	window.getSelection().removeAllRanges();
+ } else if (document.selection) {
+ 	document.selection.empty();
+ }
 }
+
 function commit() {
 	full_text = $("#editor").text();
-	if(full_text != $("#gsc-i-id1").val()){
+	/*if (full_text != $("#gsc-i-id1").val()) {
 		$("#gsc-i-id1.gsc-input").val(full_text);
 	    $(".gsc-search-button").click();
-	}
+	}*/
 	$("#editor").attr('contenteditable',false);
 }
+
 function addClass(classname) {
 	class_names.push(classname);
 	$(".classes").append('<div class="row pdn"><div class="col-9"><button class="class" style="background-color:'+getRandomColor()+'"><span>'+classname+'</span></button></div><div class="col-3"><button class="btn pull-right delete_btn"><i class="fa fa-trash"></i></button></div></div>');
 }
 
+function arrayEquals(a1, a2) {
+	if (a1.length != a2.length) {
+		return false;
+	}
+
+	for (var i = 0; i < a1.length; i++) {
+		if (a1[i] != a2[i]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function arrayIndexOf(objArr, arr) {
+	index = 0;
+	for (index = 0; index < arr.length; index++) {
+		if (arrayEquals(arr[index], objArr)) {
+			break;
+		}
+	}
+
+	if (index >= arr.length) {
+		return -1;
+	}
+
+	return index;
+}
+
+function updateText() {
+	$("#doctext").text(">>> " + text_file_all_text.slice(page_num, text_file_all_text.length).join("\n\n"));
+	$("#doccount").text(text_file_all_text.length - page_num)
+}
+
+
 $(document).ready(function(){
-	l('ok');
-	$("#edit").hide();
+	console.log('ok');
+	// $("#edit").hide();
 	$('textarea').attr('readonly',false);
 	$("#fileUpload").click()
 
@@ -131,16 +173,7 @@ $(document).ready(function(){
 	//     rawFile.send(null);
 	// }
 });
-$("#save").click(function(){
-	commit();
-	$("#save").hide();
-	$("#edit").show();
-});
-$("#edit").click(function(){
-	$("#editor").attr('contenteditable',true);
-	$("#edit").hide();
-	$("#save").show();
-});
+
 $("#addclass").click(function(){
 	classname = $('input').val();
 	if(class_names.indexOf(classname) != -1){
@@ -153,238 +186,186 @@ $("#addclass").click(function(){
 
 	$('input').val("");
 });
-$("input").keypress(function(e){
+
+$("input").keypress(function(e) {
 	var key = e.which;
-	if(key == 13){
+	if (key == 13) {
 		$("#addclass").click();
 		return false;  
 	}
 });
-$( ".classes" ).on("click",".class",function(){
+
+$(".classes").on("click", ".class", function(){
 	commit();
 
-	entity = [];
-	/*if($("#editor").attr('contenteditable') == 'true'){
-		alert("Please save the content");
-		return;
-	}*/
-	/*$("span").each(function(index) {
-	    var text = $(this).text();//get span content
-	    $(this).replaceWith(text);//replace all span with just content
-	});*/
 	selection = window.getSelection();
 	selected_text = selection.toString();
-	if(selected_text == ""){
+	if(selected_text == "") {
 		alert("Please select atleast one entity");
 		return;
 	}
-	//$("span").hide();
+
     range = selection.getRangeAt(0);
     priorRange = range.cloneRange();
     priorRange.selectNodeContents(document.getElementById("editor"));
     priorRange.setEnd(range.startContainer, range.startOffset);
     start = priorRange.toString().length;
     end = start + (selection + '').length;
-    //$("span").show();
-    if (start > end) {
-    	t = start;
-    	start = end;
-    	end = t;
-    }
-	if(start < 0 || end < 0){
+	if(start < 0 || end < 0) {
 		alert("Please select entity inside the content");
 		return;
 	}
-	l("selected_text: " + selected_text);
-	l("idx: " + start + " " + end);
-	l("anchorNode: " + selection.anchorNode.nodeName);
-	entities.push([start, end, $(this).text()]);
-	// alert(window.getSelection().toString());
 
-	l("this: " + $(this).text());
-	color_rgb = $(this).css('background-color');
-	$("#editor").attr('contenteditable',true);
-	/*if (selection.rangeCount && selection.getRangeAt) {
-	    range = selection.getRangeAt(0);
-	}*/
-	// Set design mode to on
-	document.designMode = "on";
-	if (range) {
-	  selection.removeAllRanges();
-	  selection.addRange(range);
+	for (var i = 0; i < entities.length; i++) {
+		ent = entities[i];
+		if ((start >= ent[0] && start < ent[1]) || (end > ent[0] && end <= ent[1])) {
+			clearSelection();
+			alert("Overlapping annotations");
+			return;
+		}
 	}
-	// Colorize text
-	document.execCommand("BackColor", false, color_rgb);
-	// Set design mode to off
-	document.designMode = "off";
 
-	meta_text = selected_text + " " + start + " " + end;
-	entities_values.push(meta_text);
-	entities_values.push(color_rgb);
-	setEntityOutput(meta_text, color_rgb);
-	selected_text = "";
-	$("#editor").attr('contenteditable',false);
+	entity = [start, end, $(this).text()]
+	entities.push(entity);
+
+	console.log("+ added: " + entity);
+
+	color_rgb = $(this).css('background-color');
+	tag = document.createElement("span");
+	tag.setAttribute("start_idx", start);
+	tag.setAttribute("end_idx", end);
+	tag.setAttribute("class", "annotation");
+	tag.setAttribute("annotation", $(this).text());
+	tag.setAttribute("style", "background-color: " + color_rgb + ";");
+
+	range.surroundContents(tag);
+
 	clearSelection();
 });
-$( "#entity" ).on("dblclick",".entityval",function(){
-	text = $(this).text();
-	texts = text.split(" ");
-	// var delete_text = $(this).text();
-	delete_text = texts[0];
-	en_del_idx = parseInt(texts[1]);
-	en_len_cnt = parseInt(texts[2]);
-	console.log(entities_values);
-	console.log(text);
-	var e_v_idx = entities_values.indexOf(text);
 
-	/*range = document.createRange();
-	range.selectNodeContents(document.getElementById("#editor"));
-	console.log(range.toString());
-	console.log(range.startContainer.childNodes);
-	for (var i = 0; i < range.startContainer.childNodes.length; i++) {
-		console.log(range.startContainer.childNodes[i].offsetLeft);
+$("#editor").on("click", ".annotation", function() {
+	annotation = $(this);
+	start = parseInt(annotation.attr("start_idx"));
+	end = parseInt(annotation.attr("end_idx"));
+	label = annotation.attr("annotation");
+
+	$(this).contents().unwrap();
+	entity = [start, end, label];
+
+	console.log("- removed: " + entity);
+
+	index = arrayIndexOf(entity, entities);
+	if (index > -1) {
+	  entities.splice(index, 1);
 	}
-	//range.setStart(range.startContainer.childNodes[0], 0);
-	//range.setEnd(range.startContainer.childNodes[0], 1);
-	console.log(range.toString());*/
+})
 
-	var color_txt = entities_values[e_v_idx + 1];
-	//var pre = $("#editor").html().substring(0, en_del_idx);
-	var tag_string = '<span style="background-color: ' + color_txt + ';">' + delete_text + '</span>';
-	//console.log(pre + tag_string);
-	//console.log($("#editor").html());
-	replace_html = $("#editor").html().replace(tag_string, delete_text);
-	//console.log(replace_html);
-	$("#editor").html(replace_html);
-	entities_values.splice(e_v_idx, 1);
-	entities_values.splice(e_v_idx, 1);
-	// en_del_idx = full_text.indexOf(delete_text);
-	// en_len_cnt = en_del_idx+delete_text.length;
-	del_idx = -1;
-	$.each(entities,function(idx,val){
-		if((en_del_idx == val[0]) && (en_len_cnt == val[1])){
-			del_idx = idx;
-		}
-	});
-	if(del_idx != -1){
-		entities.splice(del_idx,1);
-	}
-	// l(en_del_idx,en_len_cnt,delete_text,color_txt,tag_string); 
-	$(this).remove();
-});
-
-$("#prev").click(function(){
+$("#prev").click(function() {
 	if (page_num > 0) {
 		page_num--;
-		$("#doctext").text(">>> " + text_file_all_text.slice(page_num, text_file_all_text.length).join("\n\n"));
-		$("#doccount").text(text_file_all_text.length - page_num)
+		updateText();
 		$('#editor').text(text_file_all_text[page_num]);
-		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
-		$(".gsc-search-button").click();
-		// $("#save").show();
-		// $("#edit").hide();
-		$("#entity").empty();
+		//$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
+		//$(".gsc-search-button").click();
+
 		entities = [];
 		full_text = "";
 
-		training_datas.pop()
+		p = training_datas.pop()
+
+		console.log(">>> going back, dropped " + p['entities'].length + " annotation(s)")
 	} else {
 		alert("Already at Beginning");
 	}
 });
 
-$("#next").click(function(){
+$("#next").click(function() {
 	page_num++;
-	$("#doctext").text(">>> " + text_file_all_text.slice(page_num, text_file_all_text.length).join("\n\n"));
-	$("#doccount").text(text_file_all_text.length - page_num)
+	updateText();
 
-	if(entities.length == 0 & page_num < text_file_all_text.length){
-		// skip
-		// alert("Please select atleast one entity");
-		
+	if (entities.length == 0 & page_num < text_file_all_text.length) {
 		$('#editor').text(text_file_all_text[page_num]);
 		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
 		$(".gsc-search-button").click();
 		return;
 	}
 
-	// $("#editor").text("");
-	// $("#editor").attr('contenteditable',true);
-	// $("#save").show();
-	// $("#edit").hide();
-	$("#entity").empty();
-	if(page_num < text_file_all_text.length){
+	if (page_num < text_file_all_text.length) {
 		training_data = {};
 		training_data['content'] = full_text;
 		training_data['entities'] = entities;
+
 		training_datas.push(training_data);
+
+		console.log(">>> saved " + entities.length + " annotation(s)")
 
 		entities = [];
 		full_text = "";
 		
 		$('#editor').text(text_file_all_text[page_num]);
-		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
-		$(".gsc-search-button").click();
+		//$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
+		//$(".gsc-search-button").click();
 	} else {
 		page_num--;
 		alert("Reached End of File");
 	}
 });
-$("#complete").click(function(){
-	training_data = {};
-	training_data['content'] = full_text;
-	training_data['entities'] = entities;
-	if (full_text != "") {
+
+$("#complete").click(function() {
+	if (entities.length > 0 && full_text != "") {
+		training_data = {};
+		training_data['content'] = full_text;
+		training_data['entities'] = entities;
+	
 		training_datas.push(training_data);
 	}
+
 	if ('Blob' in window) {
 		var fileName = prompt('Please enter file name to save with(.json)', 'Untitled.json');
 		if(fileName != null){
-			l(fileName);
+			console.log(fileName);
 			var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(training_datas));
 			var dlAnchorElem = document.createElement('a');
-			dlAnchorElem.setAttribute("href",     dataStr     );
+			dlAnchorElem.setAttribute("href", dataStr);
 			dlAnchorElem.setAttribute("download", fileName);
 			dlAnchorElem.click();
 			training_datas = []
 			page_num = 0;
+
 			entities = [];
 			full_text = "";
-			// $("#editor").text("");
-			// $("#editor").attr('contenteditable',true);
-			// $("#save").show();
-			// $("#edit").hide();
-			$("#entity").empty();
 		}
-	}
-	else{
+	} else {
 		alert('Your browser does not support the HTML5 Blob.');
 	}
 	
 });
-$( ".classes" ).on("click",".delete_btn",function(){
-	if(confirm("Are you sure want to delete entity name?")){
-		l('deleted');
+
+$(".classes").on("click", ".delete_btn", function() {
+	if (confirm("Are you sure want to delete entity name?")) {
+		console.log('deleted');
 		tt = $('.delete_btn').parent().parent().text();
 		class_names.splice(class_names.indexOf(tt),1);
 		$(this).parent().parent().remove();
 	}
 });
-$("#upload").click(function(){
-	l('upload clicked');
+
+$("#upload").click(function() {
+	console.log('upload clicked');
 	var fileInput = $('#validatedCustomFile');
 	var input = fileInput.get(0);
-	if(input.files.length > 0){
+	if (input.files.length > 0) {
 		var textFile = input.files[0];
 		var reader = new FileReader();
 		reader.onload = function(e) {
-		   // The file's text will be printed here
+			// The file's text will be printed here
 		    text_file_all_text = e.target.result.split('\n');
 		    $('#editor').text(text_file_all_text[page_num]);
-	    	$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
-	    	$(".gsc-search-button").click();
-	    	$("#doctext").text(">>> " + text_file_all_text.join("\n\n"));
-	    	$("#doccount").text(text_file_all_text.length);
+	    	//$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
+	    	//$(".gsc-search-button").click();
+
+	    	page_num = 0;
+	    	updateText();
 		};
 		reader.readAsText(textFile);
 	}
