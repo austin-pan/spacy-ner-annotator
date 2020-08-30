@@ -9,6 +9,7 @@ var entities = [];
 var entities_values = [];
 var class_names = []
 
+
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
   var color = '#';
@@ -18,19 +19,6 @@ function getRandomColor() {
   return color;
 }
 
-function myFunction() {
-	setTimeout(function() {
-		$("#editor").html($("#editor").text());
-	}, 0);
-	// alert();
-}
-
-function getCorrectedText() {
-	/*if ($(".gsc-results.gsc-webResult").children().length > 3) {
-		corrected_text = $(".gs-spelling a").first().text();
-		console.log(corrected_text)
-	}*/
-}
 
 function getFilename(myFile) {
 	if(myFile.files.length > 0){
@@ -44,27 +32,6 @@ function getFilename(myFile) {
    }
 }
 
-function onPaste(e) {
-  e.preventDefault();
-
-  if (e.clipboardData) {
-    full_text = e.clipboardData.getData('text/plain');
-    document.execCommand('insertText', false, full_text);
-    console.log(full_text);
-    return false;
-  } else if (window.clipboardData) {
-    full_text = window.clipboardData.getData('Text');
-    console.log(full_text);
-    if (window.getSelection)
-      window.getSelection().getRangeAt(0).insertNode(document.createTextNode(full_text));
-  }
-}
-
-// document.querySelector('[contenteditable]').addEventListener('paste', onPaste);
-function setEntityOutput(value, color){
-	console.log(value, color);
-	$("#entity").append('<div class="entityval"><div style="background-color:'+color+'">'+value+'</div></div>');
-}
 
 function clearSelection() {
  if (window.getSelection) {
@@ -74,19 +41,17 @@ function clearSelection() {
  }
 }
 
+
 function commit() {
 	full_text = $("#editor").text();
-	/*if (full_text != $("#gsc-i-id1").val()) {
-		$("#gsc-i-id1.gsc-input").val(full_text);
-	    $(".gsc-search-button").click();
-	}*/
-	$("#editor").attr('contenteditable',false);
 }
+
 
 function addClass(classname) {
 	class_names.push(classname);
 	$(".classes").append('<div class="row pdn"><div class="col-9"><button class="class" style="background-color:'+getRandomColor()+'"><span>'+classname+'</span></button></div><div class="col-3"><button class="btn pull-right delete_btn"><i class="fa fa-trash"></i></button></div></div>');
 }
+
 
 function arrayEquals(a1, a2) {
 	if (a1.length != a2.length) {
@@ -101,6 +66,7 @@ function arrayEquals(a1, a2) {
 
 	return true;
 }
+
 
 function arrayIndexOf(objArr, arr) {
 	index = 0;
@@ -117,19 +83,19 @@ function arrayIndexOf(objArr, arr) {
 	return index;
 }
 
+
 function updateText() {
 	$("#doctext").text(">>> " + text_file_all_text.slice(page_num, text_file_all_text.length).join("\n\n"));
 	$("#doccount").text(text_file_all_text.length - page_num)
+	$('#editor').text(text_file_all_text[page_num]);
 }
+
 
 
 $(document).ready(function(){
 	console.log('ok');
-	// $("#edit").hide();
 	$('textarea').attr('readonly',false);
 	$("#fileUpload").click()
-
-	$("#editor").attr('contenteditable',false);
 
 	addClass("PERSON");
 	addClass("ORGANIZATION");
@@ -174,6 +140,7 @@ $(document).ready(function(){
 	// }
 });
 
+
 $("#addclass").click(function(){
 	classname = $('input').val();
 	if(class_names.indexOf(classname) != -1){
@@ -187,6 +154,7 @@ $("#addclass").click(function(){
 	$('input').val("");
 });
 
+
 $("input").keypress(function(e) {
 	var key = e.which;
 	if (key == 13) {
@@ -195,13 +163,14 @@ $("input").keypress(function(e) {
 	}
 });
 
+
 $(".classes").on("click", ".class", function(){
 	commit();
 
 	selection = window.getSelection();
 	selected_text = selection.toString();
 	if(selected_text == "") {
-		alert("Please select atleast one entity");
+		alert("Please select an entity to label");
 		return;
 	}
 
@@ -243,6 +212,7 @@ $(".classes").on("click", ".class", function(){
 	clearSelection();
 });
 
+
 $("#editor").on("click", ".annotation", function() {
 	annotation = $(this);
 	start = parseInt(annotation.attr("start_idx"));
@@ -260,13 +230,11 @@ $("#editor").on("click", ".annotation", function() {
 	}
 })
 
+
 $("#prev").click(function() {
 	if (page_num > 0) {
 		page_num--;
 		updateText();
-		$('#editor').text(text_file_all_text[page_num]);
-		//$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
-		//$(".gsc-search-button").click();
 
 		entities = [];
 		full_text = "";
@@ -279,14 +247,12 @@ $("#prev").click(function() {
 	}
 });
 
+
 $("#next").click(function() {
 	page_num++;
 	updateText();
 
 	if (entities.length == 0 & page_num < text_file_all_text.length) {
-		$('#editor').text(text_file_all_text[page_num]);
-		$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
-		$(".gsc-search-button").click();
 		return;
 	}
 
@@ -301,15 +267,12 @@ $("#next").click(function() {
 
 		entities = [];
 		full_text = "";
-		
-		$('#editor').text(text_file_all_text[page_num]);
-		//$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
-		//$(".gsc-search-button").click();
 	} else {
 		page_num--;
 		alert("Reached End of File");
 	}
 });
+
 
 $("#complete").click(function() {
 	if (entities.length > 0 && full_text != "") {
@@ -324,7 +287,8 @@ $("#complete").click(function() {
 		var fileName = prompt('Please enter file name to save with(.json)', 'Untitled.json');
 		if(fileName != null){
 			console.log(fileName);
-			var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(training_datas));
+			var jsonText = JSON.stringify(training_datas);
+			var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonText);
 			var dlAnchorElem = document.createElement('a');
 			dlAnchorElem.setAttribute("href", dataStr);
 			dlAnchorElem.setAttribute("download", fileName);
@@ -341,6 +305,7 @@ $("#complete").click(function() {
 	
 });
 
+
 $(".classes").on("click", ".delete_btn", function() {
 	if (confirm("Are you sure want to delete entity name?")) {
 		console.log('deleted');
@@ -349,6 +314,7 @@ $(".classes").on("click", ".delete_btn", function() {
 		$(this).parent().parent().remove();
 	}
 });
+
 
 $("#upload").click(function() {
 	console.log('upload clicked');
@@ -361,8 +327,6 @@ $("#upload").click(function() {
 			// The file's text will be printed here
 		    text_file_all_text = e.target.result.split('\n');
 		    $('#editor').text(text_file_all_text[page_num]);
-	    	//$("#gsc-i-id1.gsc-input").val(text_file_all_text[page_num]);
-	    	//$(".gsc-search-button").click();
 
 	    	page_num = 0;
 	    	updateText();
