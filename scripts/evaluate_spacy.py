@@ -31,19 +31,10 @@ def test_spacy(text):
 		print(ent.text, ent.start_char, ent.end_char, ent.label_)
 
 
-model_path = "spacy_model"
+model_path = input("Enter your Model Name: ")
 custom_nlp = spacy.load(model_path)
 
 default_nlp = spacy.load("en_core_web_sm")
-
-# file_path = "data/sfc_docs_1_25.txt"
-# data = []
-# with open(file_path, 'r') as f:
-# 	data = f.readlines()
-
-# for d in data:
-# 	test_spacy(d)
-# 	print("\n---\n")
 
 test_data_path = "test_annotations"
 test_data = load_data(test_data_path)
@@ -52,11 +43,11 @@ custom_eval = evaluate(custom_nlp, test_data)
 default_eval = evaluate(default_nlp, test_data)
 
 print("custom stats")
-print("precision", custom_eval["ents_p"])
-print("recall", custom_eval["ents_r"])
-print("f-score", custom_eval["ents_f"])
+print("precision:", custom_eval["ents_p"])
+print("recall:", custom_eval["ents_r"])
+print("f-score:", custom_eval["ents_f"])
 print("---")
 print("default stats")
-print("precision", default_eval["ents_p"])
-print("recall", default_eval["ents_r"])
-print("f-score", default_eval["ents_f"])
+print("precision:", default_eval["ents_p"])
+print("recall:", default_eval["ents_r"])
+print("f-score:", default_eval["ents_f"])

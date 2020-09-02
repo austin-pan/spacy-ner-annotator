@@ -69,11 +69,13 @@ if __name__ == "__main__":
     data_path = "data_annotations"
     train_data = load_data(data_path)
 
-    models = [None, "en", "en_core_web_sm"]
-    model = models[2]
+    models = [None, "en_core_web_sm"]
+    model = models[1]
     prdnlp = train_spacy(train_data, 20, model)
 
     # Save our trained Model
     # modelfile = input("Enter your Model Name: ")
-    modelfile = "spacy_model"
+    if model is None:
+        model = "blank"
+    modelfile = "custom_model_" + model
     prdnlp.to_disk(modelfile)
