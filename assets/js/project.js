@@ -86,7 +86,7 @@ function arrayIndexOf(objArr, arr) {
 
 function updateText() {
 	$("#doctext").text(">>> " + text_file_all_text.slice(page_num, text_file_all_text.length).join("\n\n"));
-	$("#doccount").text(text_file_all_text.length - page_num)
+	$("#doccount").text(text_file_all_text.length - 1 - page_num)
 	$('#editor').text(text_file_all_text[page_num]);
 }
 
@@ -98,7 +98,7 @@ $(document).ready(function(){
 	$("#fileUpload").click()
 
 	addClass("PERSON");
-	addClass("ORGANIZATION");
+	addClass("ORG");
 
 	// var cx = '011558942542564350974:nldba-ydc7g'; // Insert your own Custom Search engine ID here
 	// var gcse = document.createElement('script');
@@ -197,8 +197,6 @@ $(".classes").on("click", ".class", function(){
 	entity = [start, end, $(this).text()]
 	entities.push(entity);
 
-	console.log("+ added: " + entity);
-
 	color_rgb = $(this).css('background-color');
 	tag = document.createElement("span");
 	tag.setAttribute("start_idx", start);
@@ -210,6 +208,8 @@ $(".classes").on("click", ".class", function(){
 	range.surroundContents(tag);
 
 	clearSelection();
+
+	console.log("+ added: " + entity);
 });
 
 
@@ -222,12 +222,12 @@ $("#editor").on("click", ".annotation", function() {
 	$(this).contents().unwrap();
 	entity = [start, end, label];
 
-	console.log("- removed: " + entity);
-
 	index = arrayIndexOf(entity, entities);
 	if (index > -1) {
 	  entities.splice(index, 1);
 	}
+
+	console.log("- removed: " + entity);
 })
 
 
@@ -252,21 +252,17 @@ $("#next").click(function() {
 	page_num++;
 	updateText();
 
-	if (entities.length == 0 & page_num < text_file_all_text.length) {
-		return;
-	}
-
-	if (page_num < text_file_all_text.length) {
+	if (page_num < text_file_all_text.length - 1) {
 		training_data = {};
 		training_data['content'] = full_text;
 		training_data['entities'] = entities;
 
 		training_datas.push(training_data);
 
-		console.log(">>> saved " + entities.length + " annotation(s)")
-
 		entities = [];
 		full_text = "";
+
+		console.log(">>> saved " + entities.length + " annotation(s)")
 	} else {
 		page_num--;
 		alert("Reached End of File");

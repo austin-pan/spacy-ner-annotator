@@ -13,9 +13,7 @@ for filename in files:
 		train = json.load(train_data)
 
 	for data in train:
-		ents = [tuple(entity) for entity in data['entities']]
-
-		TRAIN_DATA.append((data['content'],{'entities':ents}))
+		TRAIN_DATA.append((data['content'],{'entities':data['entities']}))
 
 filename = 'train.json'
 with open(filename, 'w') as fjson:

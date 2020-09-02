@@ -1,28 +1,47 @@
 import spacy
+import spacy.lookups
 import random
 import json
+from os import listdir
+from os.path import isfile, join
 
 
-# TRAIN_DATA = [('what is the price of polo?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of ball?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of jegging?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of t-shirt?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of jeans?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of bat?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of shirt?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of bag?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of cup?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of jug?', {'entities': [(21, 24, 'PrdName')]}), ('what is the price of plate?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of glass?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of moniter?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of desktop?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of bottle?', {'entities': [(21, 27, 'PrdName')]}), ('what is the price of mouse?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of keyboad?', {'entities': [(21, 28, 'PrdName')]}), ('what is the price of chair?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of table?', {'entities': [(21, 26, 'PrdName')]}), ('what is the price of watch?', {'entities': [(21, 26, 'PrdName')]})]
+def load_data(data_path):
+    files = [join(data_path, f) for f in listdir(data_path) if isfile(join(data_path, f)) and f.endswith(".json")]
 
-filename = "train.json"
-with open(filename) as train_data:
-    jsonData = json.load(train_data)
-TRAIN_DATA = [(data[0], {'entities': [tuple(x) for x in data[1]['entities']]}) for data in jsonData]
+    data = []
+    for filename in files:
+        print(filename)
 
-def train_spacy(data, iterations):
-    TRAIN_DATA = data
-    nlp = spacy.blank('en')  # create blank Language class
+        with open(filename) as file:
+            train = json.load(file)
+
+        for d in train:
+            data.append((d['content'],{'entities':d['entities']}))
+
+    return data
+
+
+def train_spacy(train_data, iterations, model = None):
+    if model is not None:
+        nlp = spacy.load(model)  # load existing spaCy model
+        print("Loaded model '%s'" % model)
+    else:
+        nlp = spacy.blank("en")  # create blank Language class
+        print("Created blank 'en' model")
+
     # create the built-in pipeline components and add them to the pipeline
     # nlp.create_pipe works for built-ins that are registered with spaCy
     if 'ner' not in nlp.pipe_names:
         ner = nlp.create_pipe('ner')
         nlp.add_pipe(ner, last=True)
+    else:
+        ner = nlp.get_pipe("ner")
        
 
     # add labels
-    for _, annotations in TRAIN_DATA:
-        print(annotations)
+    for _, annotations in train_data:
+        # print(annotations)
         for ent in annotations.get('entities'):
             ner.add_label(ent[2])
 
@@ -32,27 +51,29 @@ def train_spacy(data, iterations):
         optimizer = nlp.begin_training()
         for itn in range(iterations):
             print("Starting iteration " + str(itn))
-            random.shuffle(TRAIN_DATA)
+            random.shuffle(train_data)
             losses = {}
-            for text, annotations in TRAIN_DATA:
+            for text, annotations in train_data:
                 nlp.update(
                     [text],  # batch of texts
                     [annotations],  # batch of annotations
                     drop=0.2,  # dropout - make it harder to memorise data
                     sgd=optimizer,  # callable to update weights
                     losses=losses)
-            print(losses)
+            print("Losses", losses)
     return nlp
 
 
-prdnlp = train_spacy(TRAIN_DATA, 20)
 
-# Save our trained Model
-modelfile = input("Enter your Model Name: ")
-prdnlp.to_disk(modelfile)
+if __name__ == "__main__":
+    data_path = "data_annotations"
+    train_data = load_data(data_path)
 
-#Test your text
-test_text = input("Enter your testing text: ")
-doc = prdnlp(test_text)
-for ent in doc.ents:
-    print(ent.text, ent.start_char, ent.end_char, ent.label_)
+    models = [None, "en", "en_core_web_sm"]
+    model = models[2]
+    prdnlp = train_spacy(train_data, 20, model)
+
+    # Save our trained Model
+    # modelfile = input("Enter your Model Name: ")
+    modelfile = "spacy_model"
+    prdnlp.to_disk(modelfile)
