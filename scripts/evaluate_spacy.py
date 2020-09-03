@@ -18,17 +18,21 @@ def evaluate(ner_model, examples):
     return scorer.scores
 
 
-def test_spacy(text):
-	print("custom:")
-	doc = custom_nlp(text)
-	for ent in doc.ents:
-		print(ent.text, ent.start_char, ent.end_char, ent.label_)
+def spacy_misses(ner_model, examples):
+    for input_, annot in examples:
+        doc = ner_model(input_)
+        entities = []
+        missed = False
+        for ent in doc.ents:
+            entity = [ent.start_char, ent.end_char, ent.label_]
+            if entity not in annot['entities']:
+                missed = True
+            entity.append(ent.text)
+            entities.append(entity)
 
-	print("")
-	print("blank:")
-	doc = blank_nlp(text)
-	for ent in doc.ents:
-		print(ent.text, ent.start_char, ent.end_char, ent.label_)
+        if missed:
+            print(input_, "\npreds:", entities, "\nannot:", [a + [input_[a[0]:a[1]]] for a in annot['entities']])
+            print("")
 
 
 model_path = input("Enter your Model Name: ")
@@ -46,8 +50,12 @@ print("custom stats")
 print("precision:", custom_eval["ents_p"])
 print("recall:", custom_eval["ents_r"])
 print("f-score:", custom_eval["ents_f"])
+print("per type:", custom_eval["ents_per_type"])
 print("---")
 print("default stats")
 print("precision:", default_eval["ents_p"])
 print("recall:", default_eval["ents_r"])
 print("f-score:", default_eval["ents_f"])
+print("per type:", default_eval["ents_per_type"])
+
+# spacy_misses(custom_nlp, test_data)

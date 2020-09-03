@@ -41,7 +41,6 @@ def train_spacy(train_data, iterations, model = None):
 
     # add labels
     for _, annotations in train_data:
-        # print(annotations)
         for ent in annotations.get('entities'):
             ner.add_label(ent[2])
 
@@ -79,3 +78,4 @@ if __name__ == "__main__":
         model = "blank"
     modelfile = "custom_model_" + model
     prdnlp.to_disk(modelfile)
+    print("saved model:", modelfile)
