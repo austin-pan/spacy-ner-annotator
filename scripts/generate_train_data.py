@@ -2,22 +2,29 @@ import json
 from os import listdir
 from os.path import isfile, join
 
-mypath = "data_annotations"
-files = [join(mypath, f) for f in listdir(mypath) if isfile(join(mypath, f)) and f.endswith(".json")]
+# load all json data files in the 'data_path' directory.
+def load_data(data_path):
+    # Get all json file names in 'data_path'
+    files = [join(data_path, f) for f in listdir(data_path) if isfile(join(data_path, f)) and f.endswith(".json")]
 
-TRAIN_DATA = []
-for filename in files:
-	print(filename)
+    data = []
+    for filename in files:
+        print(filename)
+        with open(filename) as file:
+            train = json.load(file)
 
-	with open(filename) as train_data:
-		train = json.load(train_data)
+        for d in train:
+            data.append((d['content'],{'entities':d['entities']}))
+    return data
 
-	for data in train:
-		TRAIN_DATA.append((data['content'],{'entities':data['entities']}))
 
-filename = 'train.json'
-with open(filename, 'w') as fjson:
-    json.dump(TRAIN_DATA, fjson)
+# Compile all training data into one json file, not needed for training.
+if __name__ == "__main__":
+    train_data = load_data("data_annotations")
 
-# print(TRAIN_DATA)
-print("Dumped to ", filename)
+    filename = 'train.json'
+    with open(filename, 'w') as fjson:
+        json.dump(train_data, fjson)
+
+    # print(TRAIN_DATA)
+    print("Dumped to", filename)

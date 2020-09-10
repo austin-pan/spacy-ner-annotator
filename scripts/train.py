@@ -5,24 +5,11 @@ import json
 from os import listdir
 from os.path import isfile, join
 
-
-def load_data(data_path):
-    files = [join(data_path, f) for f in listdir(data_path) if isfile(join(data_path, f)) and f.endswith(".json")]
-
-    data = []
-    for filename in files:
-        print(filename)
-
-        with open(filename) as file:
-            train = json.load(file)
-
-        for d in train:
-            data.append((d['content'],{'entities':d['entities']}))
-
-    return data
+from generate_train_data import load_data
 
 
-def train_spacy(train_data, iterations, model = None):
+# Train custom spaCy model on 'train_data' on top of 'model' using 'iteration' number of iterations.
+def train_spacy(train_data, iterations=20, model=None):
     if model is not None:
         nlp = spacy.load(model)  # load existing spaCy model
         print("Loaded model '%s'" % model)
@@ -63,7 +50,7 @@ def train_spacy(train_data, iterations, model = None):
     return nlp
 
 
-
+# Train model and save it to disk
 if __name__ == "__main__":
     data_path = "data_annotations"
     train_data = load_data(data_path)
@@ -73,9 +60,9 @@ if __name__ == "__main__":
     prdnlp = train_spacy(train_data, 20, model)
 
     # Save our trained Model
-    # modelfile = input("Enter your Model Name: ")
-    if model is None:
-        model = "blank"
-    modelfile = "custom_model_" + model
+    modelfile = input("Enter your Model Name: ")
+    # if model is None:
+    #     model = "blank"
+    # modelfile = "custom_model_" + model
     prdnlp.to_disk(modelfile)
     print("saved model:", modelfile)
