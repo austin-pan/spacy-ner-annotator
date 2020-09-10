@@ -169,11 +169,13 @@ print("per type:", default_eval["ents_per_type"])
 print("\n")
 
 # Find performance of full entity annotations
-preds = get_predictions(custom_nlp, test_data)
-stats = analyze_predictions(preds, test_data)
-print("DEDUPED STATS")
-print(stats)
-print("\n")
+full = False
+if full:
+    preds = get_predictions(custom_nlp, test_data)
+    stats = analyze_predictions(preds, test_data)
+    print("FULL ENTITY STATS")
+    print(stats)
+    print("\n")
 
 ### BELOW CODE IS ONLY RELEVANT TO SFC
 is_sfc = False
