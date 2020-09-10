@@ -66,3 +66,4 @@ if __name__ == "__main__":
     # modelfile = "custom_model_" + model
     prdnlp.to_disk(modelfile)
     print("saved model:", modelfile)
+    
