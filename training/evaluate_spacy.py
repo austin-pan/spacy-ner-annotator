@@ -31,7 +31,7 @@ def get_predictions(ner_model, examples):
 
 
 # Load custom spaCy model
-model_path = "custom_model_en_core_web_sm" # input("Enter your Model Name: ")
+model_path = input("Enter your Model Name: ") # "custom_model_en_core_web_sm"
 custom_nlp = spacy.load(model_path)
 # Load base spaCy model (might have to install it using 'spacy download -m en_core_web_sm' in terminal)
 default_nlp = spacy.load("en_core_web_sm")
